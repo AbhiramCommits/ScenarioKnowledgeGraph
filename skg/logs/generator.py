@@ -201,7 +201,7 @@ def generate_corpus(
     for scenario_idx in range(n_scenarios):
         scenario_id = f"scenario_{scenario_idx:06d}"
         behavior = behaviors[scenario_idx % len(behaviors)]
-        n_agents_this = rng.integers(4, n_agents + 1)
+        n_agents_this = rng.integers(max(2, min(4, n_agents - 1)), n_agents + 1)
 
         tracks_df, lanes, controls = generate_scenario(
             scenario_id=scenario_id,
