@@ -41,7 +41,14 @@ class Settings:
     rrf_k: int = 60
 
     def __post_init__(self) -> None:
-        for d in [self.data_dir, self.raw_data_dir, self.graph_data_dir, self.index_dir, self.models_dir, self.results_dir]:
+        for d in [
+            self.data_dir,
+            self.raw_data_dir,
+            self.graph_data_dir,
+            self.index_dir,
+            self.models_dir,
+            self.results_dir,
+        ]:
             d.mkdir(parents=True, exist_ok=True)
 
 

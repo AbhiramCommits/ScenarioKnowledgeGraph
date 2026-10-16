@@ -1,9 +1,9 @@
 """SQL tabular baseline for scenario retrieval."""
 
+import sqlite3
 from pathlib import Path
 
 import pandas as pd
-import sqlite3
 
 
 class SQLBaseline:
@@ -27,7 +27,7 @@ class SQLBaseline:
         # Simple text matching in description
         cursor = self.conn.cursor()
         cursor.execute(
-            f"""
+            """
             SELECT scenario_id, behavior_label, min_ttc, max_speed
             FROM scenarios
             WHERE description LIKE ?
@@ -39,13 +39,15 @@ class SQLBaseline:
 
         results = []
         for row in cursor.fetchall():
-            results.append({
-                "scenario_id": row[0],
-                "behavior_label": row[1],
-                "min_ttc": row[2],
-                "max_speed": row[3],
-                "score": 1.0,
-            })
+            results.append(
+                {
+                    "scenario_id": row[0],
+                    "behavior_label": row[1],
+                    "min_ttc": row[2],
+                    "max_speed": row[3],
+                    "score": 1.0,
+                }
+            )
 
         return results
 

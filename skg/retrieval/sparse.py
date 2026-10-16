@@ -1,9 +1,7 @@
 """Sparse vector search using BM25."""
 
-from pathlib import Path
 import pickle
-
-import pandas as pd
+from pathlib import Path
 
 
 class SparseIndex:

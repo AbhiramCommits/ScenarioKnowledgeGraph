@@ -7,10 +7,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from skg.retrieval import HybridRetriever
-from skg.baselines.sql_baseline import SQLBaseline
 from skg.graph import MemoryGraphStore
 from skg.graph.loader import load_graph_from_parquet
+from skg.retrieval import HybridRetriever
 
 
 def compute_metrics(retrieved: list[int], relevant: list[int]) -> dict:
@@ -55,6 +54,7 @@ def run_benchmark(data_dir: str | Path, results_dir: str | Path = "data/results"
 
     # Create embeddings
     from skg.retrieval.embed import embed_scenarios
+
     embeddings = embed_scenarios(summary_df)
 
     from skg.retrieval.dense import DenseIndex

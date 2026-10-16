@@ -43,7 +43,9 @@ class MemoryGraphStore(GraphStore):
 
         self.graph.add_edge(src_id, dst_id, rel_type=rel_type, **properties)
 
-    def motif_search(self, pattern: str, params: dict[str, Any] | None = None, limit: int = 100) -> list[dict[str, Any]]:
+    def motif_search(
+        self, pattern: str, params: dict[str, Any] | None = None, limit: int = 100
+    ) -> list[dict[str, Any]]:
         """Simple motif search over in-memory graph."""
         results = []
 
@@ -60,7 +62,7 @@ class MemoryGraphStore(GraphStore):
 
         if target_rel:
             # Find edges matching the target relation type
-            for src, dst, key, data in self.graph.out_edges(keys=True, data=True):
+            for src, dst, _key, data in self.graph.out_edges(keys=True, data=True):
                 if data.get("rel_type") == target_rel:
                     results.append({"src": src, "dst": dst, "type": target_rel})
                     if len(results) >= limit:

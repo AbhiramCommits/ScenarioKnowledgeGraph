@@ -3,32 +3,33 @@
 import tempfile
 from pathlib import Path
 
-import pytest
 import pandas as pd
+import pytest
 
-from skg.retrieval.engine import HybridRetriever
-from skg.retrieval.dense import DenseIndex
-from skg.retrieval.sparse import SparseIndex
-from skg.retrieval.fusion import reciprocal_rank_fusion
-from skg.retrieval.embed import embed_scenarios
 from skg.baselines.sql_baseline import SQLBaseline
 from skg.graph import MemoryGraphStore
 from skg.logs.generator import generate_corpus
-from skg.extract.spark_job import run_extraction
+from skg.retrieval.dense import DenseIndex
+from skg.retrieval.embed import embed_scenarios
+from skg.retrieval.engine import HybridRetriever
+from skg.retrieval.fusion import reciprocal_rank_fusion
+from skg.retrieval.sparse import SparseIndex
 
 
 @pytest.fixture
 def sample_df() -> pd.DataFrame:
     """Create sample scenario dataframe."""
-    return pd.DataFrame({
-        "scenario_id": [f"scen_{i}" for i in range(100)],
-        "behavior_label": ["CUT_IN", "BRAKE", "YIELD"] * 33 + ["CUT_IN"],
-        "description": [f"Scenario {i}" for i in range(100)],
-        "n_agents": [5] * 100,
-        "duration_steps": [50] * 100,
-        "min_ttc": [3.0 + i * 0.01 for i in range(100)],
-        "max_speed": [15.0 + i * 0.1 for i in range(100)],
-    })
+    return pd.DataFrame(
+        {
+            "scenario_id": [f"scen_{i}" for i in range(100)],
+            "behavior_label": ["CUT_IN", "BRAKE", "YIELD"] * 33 + ["CUT_IN"],
+            "description": [f"Scenario {i}" for i in range(100)],
+            "n_agents": [5] * 100,
+            "duration_steps": [50] * 100,
+            "min_ttc": [3.0 + i * 0.01 for i in range(100)],
+            "max_speed": [15.0 + i * 0.1 for i in range(100)],
+        }
+    )
 
 
 def test_embed_scenarios(sample_df: pd.DataFrame) -> None:

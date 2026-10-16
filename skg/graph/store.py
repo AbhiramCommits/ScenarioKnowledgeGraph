@@ -1,10 +1,7 @@
 """Graph store abstract interface."""
 
 from abc import ABC, abstractmethod
-from datetime import datetime
-from typing import Any, Optional
-
-import pandas as pd
+from typing import Any
 
 
 class GraphStore(ABC):
@@ -27,7 +24,9 @@ class GraphStore(ABC):
         """Upsert an edge."""
 
     @abstractmethod
-    def motif_search(self, pattern: str, params: dict[str, Any] | None = None, limit: int = 100) -> list[dict[str, Any]]:
+    def motif_search(
+        self, pattern: str, params: dict[str, Any] | None = None, limit: int = 100
+    ) -> list[dict[str, Any]]:
         """Search for motif patterns. Pattern is a Cypher-like query."""
 
     @abstractmethod

@@ -4,13 +4,11 @@ import tempfile
 from pathlib import Path
 
 import pytest
-import pandas as pd
-import pyarrow.parquet as pq
 
-from skg.graph.memstore import MemoryGraphStore
-from skg.graph.loader import load_graph_from_parquet
-from skg.logs.generator import generate_corpus
 from skg.extract.spark_job import run_extraction
+from skg.graph.loader import load_graph_from_parquet
+from skg.graph.memstore import MemoryGraphStore
+from skg.logs.generator import generate_corpus
 
 
 @pytest.fixture
