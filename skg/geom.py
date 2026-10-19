@@ -1,7 +1,6 @@
 """Geometry utilities with C++ hot path and NumPy fallback."""
 
 import warnings
-from typing import Any
 
 import numpy as np
 
@@ -34,7 +33,7 @@ try:
         return dict(result[0]) if result else {}
 
 except ImportError as e:
-    warnings.warn(f"C++ geometry module not available, using NumPy fallback: {e}")
+    warnings.warn(f"C++ geometry module not available, using NumPy fallback: {e}", stacklevel=2)
 
     def pairwise_min_distance(traj1: np.ndarray, traj2: np.ndarray) -> float:
         """Minimum distance between two trajectories (NumPy implementation)."""
@@ -132,4 +131,11 @@ except ImportError as e:
         }
 
 
-__all__ = ["BACKEND", "pairwise_min_distance", "time_to_collision", "lateral_offset_from_centerline", "heading_delta", "interaction_features"]
+__all__ = [
+    "BACKEND",
+    "pairwise_min_distance",
+    "time_to_collision",
+    "lateral_offset_from_centerline",
+    "heading_delta",
+    "interaction_features",
+]

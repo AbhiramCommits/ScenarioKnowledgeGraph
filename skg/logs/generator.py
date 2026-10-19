@@ -1,6 +1,5 @@
 """Synthetic driving log generator."""
 
-import json
 import random
 from pathlib import Path
 
@@ -10,7 +9,6 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from skg.logs.schema import AgentTrack, LaneSegment, ScenarioMeta, TrafficControl
-
 
 # Behavior taxonomy with descriptions
 BEHAVIORS = {
@@ -76,7 +74,6 @@ def generate_scenario(
 
         if behavior == "LEAD_VEHICLE_BRAKING" and agent_idx == 1:
             # Lead vehicle that brakes suddenly
-            brake_step = int(0.4 * duration_steps)
             speed_initial = rng.uniform(10, 15)
             speed_final = rng.uniform(2, 5)
             speeds = np.linspace(speed_initial, speed_final, duration_steps)
@@ -85,8 +82,6 @@ def generate_scenario(
         elif behavior == "CUT_IN" and agent_idx == 1:
             # Vehicle cutting in from side
             x_base = np.linspace(15, 40, duration_steps)
-            lane_change_start = int(0.3 * duration_steps)
-            lane_change_end = int(0.7 * duration_steps)
             y_offset = np.linspace(3.0, -1.8, duration_steps)
             speeds = np.full(duration_steps, rng.uniform(12, 16))
             # Calculate TTC at closest point
@@ -153,18 +148,6 @@ def generate_scenario(
         )
         for i in range(2)
     ]
-
-    # Description
-    if behavior == "LEAD_VEHICLE_BRAKING":
-        desc = BEHAVIORS[behavior].format(speed=10, final_speed=3, duration=3)
-    elif behavior == "CUT_IN":
-        desc = BEHAVIORS[behavior].format(side="left", ttc=2.5)
-    elif behavior == "PEDESTRIAN_JAYWALK":
-        desc = BEHAVIORS[behavior].format(speed=1.5, dist=15)
-    else:
-        desc = BEHAVIORS[behavior].format(
-            n_agents=n_agents, avg_speed=max_speed * 0.7, oncoming_count=1, gap=5, relative_speed=3, dist=20, other_count=1
-        )
 
     if min_ttc == float("inf"):
         min_ttc = 10.0

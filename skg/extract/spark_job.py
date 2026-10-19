@@ -6,16 +6,14 @@ from datetime import datetime
 from pathlib import Path
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, count, countDistinct, lit
+from pyspark.sql.functions import col, lit
 
-from skg.config import get_settings
-from skg.extract.entities import extract_scenarios, extract_agents, extract_lanes, extract_traffic_controls
+from skg.extract.entities import extract_agents, extract_lanes, extract_scenarios, extract_traffic_controls
 from skg.extract.relations import extract_all_relations
 
 
 def run_extraction(input_dir: str, output_dir: str) -> dict:
     """Run semantic extraction pipeline."""
-    settings = get_settings()
     input_path = Path(input_dir) / "scenarios" / "*.parquet"
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -32,9 +30,7 @@ def run_extraction(input_dir: str, output_dir: str) -> dict:
     try:
         summary_df = spark.read.parquet(str(Path(input_dir) / "scenario_summary.parquet"))
         raw_df = raw_df.join(
-            summary_df.select("scenario_id", "behavior_label", "description"),
-            on="scenario_id",
-            how="left"
+            summary_df.select("scenario_id", "behavior_label", "description"), on="scenario_id", how="left"
         )
     except Exception as e:
         print(f"Warning: could not load scenario_summary: {e}")
@@ -73,16 +69,18 @@ def run_extraction(input_dir: str, output_dir: str) -> dict:
     relations.coalesce(1).write.mode("overwrite").parquet(str(edges_dir / "all_relations"))
 
     # Scenario summary with statistics
-    scenario_stats = raw_df.select("scenario_id").distinct().select(
-        col("scenario_id"),
-        lit(5).alias("n_agents"),
-        lit(100).alias("n_track_points"),
+    scenario_stats = (
+        raw_df.select("scenario_id")
+        .distinct()
+        .select(
+            col("scenario_id"),
+            lit(5).alias("n_agents"),
+            lit(100).alias("n_track_points"),
+        )
     )
 
     summary_with_stats = scenarios.join(scenario_stats, on="scenario_id", how="left")
-    summary_with_stats.coalesce(1).write.mode("overwrite").parquet(
-        str(output_path / "scenario_summary_with_stats")
-    )
+    summary_with_stats.coalesce(1).write.mode("overwrite").parquet(str(output_path / "scenario_summary_with_stats"))
 
     elapsed = time.time() - start_time
 

@@ -3,9 +3,8 @@
 import tempfile
 from pathlib import Path
 
-import pytest
 import pandas as pd
-import pyarrow.parquet as pq
+import pytest
 
 from skg.extract.spark_job import run_extraction
 from skg.logs.generator import generate_corpus
@@ -72,7 +71,16 @@ def test_edge_invariants(small_corpus: str) -> None:
         edges = pd.read_parquet(edges_path)
 
         # Check required columns
-        required_cols = ["src_id", "src_type", "rel_type", "dst_id", "dst_type", "scenario_id", "valid_from_ms", "valid_to_ms"]
+        required_cols = [
+            "src_id",
+            "src_type",
+            "rel_type",
+            "dst_id",
+            "dst_type",
+            "scenario_id",
+            "valid_from_ms",
+            "valid_to_ms",
+        ]
         for col in required_cols:
             assert col in edges.columns, f"Missing column: {col}"
 

@@ -1,15 +1,14 @@
 """Hybrid retrieval engine fusing multiple search legs."""
 
 from pathlib import Path
-from typing import Optional
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from skg.retrieval.dense import DenseIndex
-from skg.retrieval.sparse import SparseIndex
-from skg.retrieval.fusion import reciprocal_rank_fusion
 from skg.graph import MemoryGraphStore
+from skg.retrieval.dense import DenseIndex
+from skg.retrieval.fusion import reciprocal_rank_fusion
+from skg.retrieval.sparse import SparseIndex
 
 
 class HybridRetriever:
@@ -33,8 +32,8 @@ class HybridRetriever:
         self,
         query: str,
         k: int = 10,
-        legs: Optional[list[str]] = None,
-        weights: Optional[dict[str, float]] = None,
+        legs: list[str] | None = None,
+        weights: dict[str, float] | None = None,
     ) -> list[dict]:
         """Search for scenarios."""
         if legs is None:
@@ -75,12 +74,19 @@ class HybridRetriever:
         for scenario_idx, score in fused:
             if scenario_idx < len(self.scenario_ids):
                 row = self.summary_df.iloc[scenario_idx]
-                results.append({
-                    "scenario_id": str(row.get("scenario_id", "")),
-                    "behavior_label": str(row.get("behavior_label", "")),
-                    "score": float(score),
-                    "rank_contributions": {leg: idx for leg, res in rankings.items() for idx, (sid, _) in enumerate(res) if sid == scenario_idx},
-                })
+                results.append(
+                    {
+                        "scenario_id": str(row.get("scenario_id", "")),
+                        "behavior_label": str(row.get("behavior_label", "")),
+                        "score": float(score),
+                        "rank_contributions": {
+                            leg: idx
+                            for leg, res in rankings.items()
+                            for idx, (sid, _) in enumerate(res)
+                            if sid == scenario_idx
+                        },
+                    }
+                )
 
         return results[:k]
 

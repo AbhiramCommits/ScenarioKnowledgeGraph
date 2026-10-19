@@ -1,7 +1,5 @@
 """Reciprocal Rank Fusion for multi-leg retrieval."""
 
-from typing import Optional
-
 
 def reciprocal_rank_fusion(
     rankings: dict[str, list[tuple[int, float]]],
@@ -22,7 +20,7 @@ def reciprocal_rank_fusion(
 
     for leg_name, ranked_results in rankings.items():
         weight = weights[leg_name]
-        for rank, (doc_id, orig_score) in enumerate(ranked_results):
+        for rank, (doc_id, _orig_score) in enumerate(ranked_results):
             rrf_score = weight * (1.0 / (k + rank + 1))
             scores[doc_id] = scores.get(doc_id, 0.0) + rrf_score
 
